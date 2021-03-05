@@ -1,5 +1,5 @@
 {
-  "name" : "HV Theme Switcher",
+  "name" : "Hitachi Theme Switcher",
   "host" : {
     "app" : "XD",
     "minVersion" : "21.0"
@@ -9,23 +9,13 @@
     "path" : "images/icon@1x.png",
     "width" : 24,
     "height" : 24
-  }, {
-    "path" : "images/icon@2x.png",
-    "width" : 48,
-    "height" : 48
   } ],
-  "uiEntryPoints" : [ {
-    "label" : "Switch to Dawn",
-    "type" : "menu",
-    "commandId" : "switchToDawn",
-    "shortcut": { "mac": "Cmd+Shift+D", "win": "Ctrl+Shift+D" }
-  } ,
+  "uiEntryPoints" : [ 
   {
-    "label" : "Switch to Wicked",
-    "type" : "menu",
-    "commandId" : "switchToWicked",
-    "shortcut": { "mac": "Cmd+Shift+W", "win": "Ctrl+Shift+W" }
+    "type": "panel",
+    "label": "Theme Switcher Panel",
+    "panelId": "themeSwitcherPanel"
   }
 ],
-  "version" : "0.0.1"
+  "version" : "2.0.0"
 }
