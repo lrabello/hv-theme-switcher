@@ -9,9 +9,9 @@ const THEMES_ARRAY = [
     // accent
     // [".acce0","#ffffff","#ffffff"],
     [".acce1","#414141","#dedede"],
-    [".acce2","#146bd2","#146bd2"],
-    [".acce2h","#4389db","#4389db"],
-    [".acce3","#cc0000","#cc0000"],
+    [".acce2","#146bd2","#146bd2"], //same values on both themes
+    [".acce2h","#4389db","#4389db"], //same values on both themes
+    [".acce3","#cc0000","#cc0000"], //same values on both themes
 
     // atmosphere
     [".atmo1","#ffffff","#393939"],

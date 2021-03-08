@@ -7,8 +7,8 @@ const {Rectangle, Ellipse, Color, Text, Path, Group, Artboard, SymbolInstance, R
     Polygon, Line, ImageFill } = require("scenegraph");
 const application = require("application");
     
-const themeV1 = require('./theme-switcher-v1.3.1');
-const themeV3 = require('./theme-switcher-v3.4.0');
+const themeV1 = require('./theme-switcher-v1');
+const themeV3 = require('./theme-switcher-v3');
 
 const PLUGIN_ID = "fda3b272";
 const DESIGN_SYSTEM_VERSION_1 = 'v1.3.1';
@@ -18,7 +18,6 @@ const DAWN_THEME = 1;
 const WICKED_THEME = 2; 
 
 let panel;
-let shouldSetDefaultSystemVersion = false;
 
 function create() {
 
@@ -119,7 +118,6 @@ function create() {
     labelWrapper.appendChild(select);
 
     // Panel
-
     panel = document.createElement("div");
     panel.appendChild(divPre)
     panel.appendChild(labelWrapper);
@@ -133,7 +131,6 @@ function show(event) {
     // create panel the first time it's shown
     if (!panel) {
         panel = create();
-        //document.getElementById('v-number').setAttribute("value", true);';
         event.node.appendChild(panel);
     }
 
@@ -158,12 +155,10 @@ function update(selection, root) {
             if (dawnButton) {
                 dawnButton.classList.remove('selected');
                 dawnLabel.classList.remove('label-selected');
-
             }
             if (wickedButton) {
                 wickedButton.classList.remove('selected');
                 wickedLabel.classList.remove('label-selected');
-
             }
 
             break;
@@ -173,12 +168,6 @@ function update(selection, root) {
         default:
             objectElement.innerHTML = `${objectQuantity} objects selected`;
     }
-
-
-    //const designSystemVersion = getCurrentDesignSystemVersion(root);
-    /*if (!designSystemVersion) {
-        setCurrentDesignSystemVersion(root, DESIGN_SYSTEM_VERSION_3);
-    }*/
 
     if (!dawnButton) {
         dawnButton = document.getElementById('dawn-button');
@@ -230,7 +219,7 @@ function update(selection, root) {
 
 function switchDesignVersion(sceneNode, selection, versionTo){
     // Apply it...
-    console.log("Switching HV design system");
+    //console.log("Switching HV design system");
 
     setCurrentDesignSystemVersion(sceneNode, versionTo);
     const currentTheme = Number(getCurrentTheme(sceneNode));
@@ -245,7 +234,7 @@ function switchDesignVersion(sceneNode, selection, versionTo){
 
 function switchTheme(sceneNode, selection, sourceIdx, destinationIdx){
     // Apply it...
-    console.log("Switching HV theme");
+    //console.log("Switching HV theme");
 
     // TODO: Find out current design system version
     setCurrentTheme(sceneNode, `${destinationIdx}`);
@@ -333,7 +322,7 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
     }
     else if( item instanceof SymbolInstance ){
 
-	    console.log("Found symbol. We can't edit it...");
+	    //console.log("Found symbol. We can't edit it...");
 
     }
     else if( item instanceof RepeatGrid ){
@@ -343,7 +332,7 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
     }
     else{
         // Other elements
-        console.log("Unknown element: " + typeof item)
+        //console.log("Unknown element: " + typeof item)
     }
 
 }
@@ -355,15 +344,11 @@ function replaceColor(themesArray, elem, property,  sourceIdx, destinationIdx){
         // Let's check if it's a multi-level property
         var value;
         const arrLocation=property.split(".");
-        //console.log(arrLocation, elem[arrLocation[0]]);
         
         if( arrLocation.length == 1 ){
             value = elem[arrLocation[0]];
-        }
-        else if ( arrLocation.length == 2 && elem[arrLocation[0]] != null ){
+        } else if ( arrLocation.length == 2 && elem[arrLocation[0]] != null ){
             value = elem[arrLocation[0]][arrLocation[1]];
-            //console.log('tem shadow')
-            //console.log(arrLocation, elem[arrLocation[0]], value);
         }
         else{
             console.log("Invalid property defined: " + property);
@@ -372,33 +357,37 @@ function replaceColor(themesArray, elem, property,  sourceIdx, destinationIdx){
 
         if( value && !(value instanceof ImageFill)){
             
-            /* let colorValue = value.toHex(1); 
+            let colorValue = value.toHex(1); 
             if (arrLocation[0] === 'shadow' && elem[arrLocation[0]] ) {
-                colorValue = value.toRgba();
-                console.log('shadow ->', value, colorValue, arrLocation[0], elem[arrLocation[0]], getEquivalentColor(themesArray, colorValue, sourceIdx, destinationIdx));
-            } */
+                colorValue = `${colorValue}|${Number(value.toRgba().a / 255).toFixed(2)}`;
+            }
 
-            //elem[arrLocation[0]] && console.log(colorValue);
-            var c = getEquivalentColor(themesArray, value.toHex(1), sourceIdx, destinationIdx);
+            var c = getEquivalentColor(themesArray, colorValue, sourceIdx, destinationIdx);
             if (c){
                 // Transforming
-                //console.log("Changing color: from " + value.toHex(1) + " to " + c)
-
                 const splittedColor = c.split('|');
                 const [hexColor, opacity] = splittedColor.length > 1 ? splittedColor : [splittedColor[0], null];
                 if (opacity) {
                     value = new Color(hexColor, opacity);
-                    console.log('opacity', opacity)
                 } else {
                     value = new Color(hexColor); 
                 }
                                
-                if( arrLocation.length == 1 ){
+                if ( arrLocation.length == 1 ){
                     elem[arrLocation[0]] = value;
-                }
-                else if ( arrLocation.length == 2 ){
+                } else if ( arrLocation.length == 2 ){
                     var obj = elem[arrLocation[0]];
                     obj[arrLocation[1]] = value;
+
+                    if (arrLocation[0] === 'shadow') {
+                        if (destinationIdx === DAWN_THEME) {
+                            obj.y = 2;
+                            obj.blur = 12; 
+                        } else {
+                            obj.y = 3;
+                            obj.blur = 5; 
+                        }
+                    }
 
                     elem[arrLocation[0]] = obj;
                 }
@@ -419,7 +408,6 @@ function getEquivalentColor(themesArray, color, sourceIdx, destinationIdx){
 
     if( found >= 0 ){
         //console.log("Found "+ themesArray[found][0] + " color " + color + " in position " + found + ". Returning " + themesArray[found][destinationIdx])
-        //console.log(themesArray[found])
 	    return themesArray[found][destinationIdx];
     }
 

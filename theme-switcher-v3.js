@@ -20,10 +20,11 @@ const THEMES_ARRAY = [
 
     // tweaks
     [".logo","#000000","#ffffff"],
-    //[".shadow","rgba(65,65,65,0.12)","rgba(0,0,0,.16)"],
-    //".shadow","#d8d8d8","#414141"],
-    [".shadow","#d8d8d8","#212121"],
     [".selectednav","#d00000","#cecece"],
+
+    // Shadow
+    [".shadow","#414141|0.12","#000000|0.16"],
+    [".shadow2","#d8d8d8|1.00","#212121|1.00"],
     
     // semantic	
     // severity	

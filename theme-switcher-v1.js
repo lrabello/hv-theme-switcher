@@ -11,6 +11,9 @@ const THEMES_ARRAY = [
     [".acce1","#414141","#dedede"],
     [".acce2","#146bd2","#146bd2"],
 
+    // tweak - shadow
+    [".shadow","#414141|0.12","#dedede|0.12"],
+
     // atmosphere
     [".atmo1","#ffffff","#393939"],
     [".atmo2","#f9f9f9","#424242"],
