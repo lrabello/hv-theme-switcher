@@ -11,8 +11,8 @@ const themeV1 = require('./theme-switcher-v1');
 const themeV3 = require('./theme-switcher-v3');
 
 const PLUGIN_ID = "fda3b272";
-const DESIGN_SYSTEM_VERSION_1 = 'v1.3.1';
-const DESIGN_SYSTEM_VERSION_3 = 'v3.0.0'; 
+const DESIGN_SYSTEM_VERSION_1 = 'v1.2.1';
+const DESIGN_SYSTEM_VERSION_3 = 'v3.4.0'; 
 
 const DAWN_THEME = 1;
 const WICKED_THEME = 2; 
@@ -227,7 +227,7 @@ function switchDesignVersion(sceneNode, selection, versionTo){
 
     for (let index = 0; index < selection.items.length; index++) {
         const item = selection.items[index];
-        processItem(themesArray, item, currentTheme, currentTheme);
+        processItem(themesArray, item, versionTo, currentTheme, currentTheme);
     }
     
 }
@@ -243,7 +243,7 @@ function switchTheme(sceneNode, selection, sourceIdx, destinationIdx){
 
     for (let index = 0; index < selection.items.length; index++) {
         const item = selection.items[index];
-        processItem(themesArray, item, sourceIdx, destinationIdx);
+        processItem(themesArray, item, currentDesignSystemVersion, sourceIdx, destinationIdx);
     }
 }
 
@@ -274,7 +274,7 @@ function getThemesArray(designSystemVersion) {
     }
 }
 
-function processItem(themesArray, item, sourceIdx, destinationIdx){
+function processItem(themesArray, item, designSystemVersion, sourceIdx, destinationIdx){
 
     if ( item instanceof Text){
 
@@ -283,7 +283,7 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
         var styles = item.styleRanges;
 
         styles.map( styleRange => 
-            replaceColor(themesArray, styleRange, "fill", sourceIdx, destinationIdx) 
+            replaceColor(themesArray, styleRange, "fill", designSystemVersion, sourceIdx, destinationIdx) 
         )
         try {
             item.styleRanges = styles;            
@@ -295,14 +295,14 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
 	    item instanceof Path || item instanceof Polygon || item instanceof Line ){
 
         //console.log( "Found Rectangle or Ellipse");
-        replaceColor(themesArray, item,"fill",sourceIdx, destinationIdx);
-        replaceColor(themesArray, item,"stroke",sourceIdx, destinationIdx);
-        replaceColor(themesArray, item,"shadow.color",sourceIdx, destinationIdx);
+        replaceColor(themesArray, item, "fill", designSystemVersion, sourceIdx, destinationIdx);
+        replaceColor(themesArray, item, "stroke", designSystemVersion, sourceIdx, destinationIdx);
+        replaceColor(themesArray, item, "shadow.color", designSystemVersion, sourceIdx, destinationIdx);
     }
     else if( item instanceof Artboard || item instanceof Group ){
         // go one level down
         if( item instanceof Artboard ){
-            replaceColor(themesArray, item,"fill",sourceIdx, destinationIdx);
+            replaceColor(themesArray, item,"fill", designSystemVersion, sourceIdx, destinationIdx);
         }
 
         // Skipping some conditions here...
@@ -313,7 +313,7 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
             //console.log("Going one level down...")
             item.children.forEach(function(e,i){
                 //console.log("Here..." + e + i)
-                processItem(themesArray, e, sourceIdx, destinationIdx)
+                processItem(themesArray, e, designSystemVersion, sourceIdx, destinationIdx)
             })
 
         }
@@ -337,7 +337,7 @@ function processItem(themesArray, item, sourceIdx, destinationIdx){
 
 }
 
-function replaceColor(themesArray, elem, property,  sourceIdx, destinationIdx){
+function replaceColor(themesArray, elem, property, designSystemVersion, sourceIdx, destinationIdx){
 
     try {
 
@@ -379,15 +379,18 @@ function replaceColor(themesArray, elem, property,  sourceIdx, destinationIdx){
                     var obj = elem[arrLocation[0]];
                     obj[arrLocation[1]] = value;
 
-                    if (arrLocation[0] === 'shadow') {
-                        if (destinationIdx === DAWN_THEME) {
-                            obj.y = 2;
-                            obj.blur = 12; 
-                        } else {
-                            obj.y = 3;
-                            obj.blur = 5; 
+                    if (DESIGN_SYSTEM_VERSION_1 !== designSystemVersion) {
+                        if (arrLocation[0] === 'shadow') {
+                            if (destinationIdx === DAWN_THEME) {
+                                obj.y = 2;
+                                obj.blur = 12; 
+                            } else {
+                                obj.y = 3;
+                                obj.blur = 5; 
+                            }
                         }
                     }
+                    
 
                     elem[arrLocation[0]] = obj;
                 }

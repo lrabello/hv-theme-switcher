@@ -5,12 +5,11 @@
 const THEMES_ARRAY = [
 
 
-    // Color Name, Dawn 1.3.1, Wicked 1.3.1
+     // Color Name, Dawn 1.2.1 , Wicked 1.2.1
 
     // accent
     [".acce1","#414141","#dedede"],
-    [".acce2","#146bd2","#146bd2"],
-
+    
     // tweak - shadow
     [".shadow","#414141|0.12","#dedede|0.12"],
 
@@ -22,6 +21,7 @@ const THEMES_ARRAY = [
     [".atmo5","#dedede","#626262"],
     [".atmo6","#bcbcbc","#2c2c2c"],
     [".atmo7","#999999","#919191"],
+
 
 ];
 

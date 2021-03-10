@@ -4,7 +4,9 @@
 
 const THEMES_ARRAY = [
 
-    // Color Name, Dawn 1.2.0 , Wicked 1.2.0
+    
+
+    // Color Name, Dawn 1.x.x, Wicked 1.x.x
 
     // accent
     // [".acce0","#ffffff","#ffffff"],
